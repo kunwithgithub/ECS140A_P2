@@ -213,7 +213,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	            	String key = e.getText();
 	            	SymbolEntry entry = table.findSymbol(key);
 	            	list.append(entry);
-	     
 	                e.apply(this);
 	            }
 	        }
