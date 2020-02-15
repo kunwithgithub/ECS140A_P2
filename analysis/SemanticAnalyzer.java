@@ -1,13 +1,18 @@
 package nada.analysis;
 
-import java.util.*
+import java.util.*;
 import nada.node.*;
+import nada.analysis.*;
 
 
 public class SemanticAnalyzer extends DepthFirstAdapter{
 	
 	
 	private SymbolTable table;
+
+	public SemanticAnalyzer(){
+		initTable();
+	}
 	
 	private void initTable(){
 		   table = new SymbolTable();
@@ -79,9 +84,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	       
 	        if(node.getIdent() != null)
 	        {   
-	        	//TIdent id = node.getIdnet();
-	        	//String key = id.getText();
-	        	String key = toString(node.getIdnet());
+	        	TIdent id = node.getIdent();
+	        	String key = id.getText();
 	        	SymbolEntry entry = table.findSymbol(key);
 	            node.getIdent().apply(this);
 	        }
@@ -191,9 +195,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	        inAIdentList(node);
 	        if(node.getIdent() != null)
 	        {   
-	        	//TIdent id = node.getIdnet();
-	        	//String key = id.getText();
-	        	String key = toString(node.getIdnet());
+	        	TIdent id = node.getIdent();
+	        	String key = id.getText();
 	        	SymbolEntry entry = table.enterSymbol(key);
 	            SymbolEntry list = entry;
 	            node.getIdent().apply(this);
@@ -228,9 +231,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	        
 	        if(node.getIdent() != null)
 	        {   
-	        	//TIdent id = node.getIdnet();
-	        	//String key = id.getText();
-	        	String key = toString(node.getIdnet());
+	        	TIdent id = node.getIdent();
+	        	String key = id.getText();
 	        	SymbolEntry entry = table.enterSymbol(key);
 	        	
 	            node.getIdent().apply(this);
@@ -271,9 +273,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	        
 	        if(node.getIdent() != null)
 	        {   
-	        	//TIdent id = node.getIdnet();
-	        	//String key = id.getText();
-	        	String key = toString(node.getIdnet());
+	        	TIdent id = node.getIdent();
+	        	String key = id.getText();
 	        	SymbolEntry entry = table.enterSymbol(key);
 	            node.getIdent().apply(this);
 	        }
@@ -336,9 +337,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	        
 	        if(node.getIdent() != null)
 	        {   
-	        	//TIdent id = node.getIdnet();
-        	    //String key = id.getText();
-	        	String key = toString(node.getIdnet());
+	        	TIdent id = node.getIdent();
+        	    String key = id.getText();
         	    SymbolEntry entry = table.findSymbol(key);
 	            node.getIdent().apply(this);
 	        }
