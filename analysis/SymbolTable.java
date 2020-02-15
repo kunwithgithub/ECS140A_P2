@@ -4,12 +4,10 @@ public class SymbolTable extends Object{
 
    private int level;
    private Stack<Map<String, SymbolEntry>> stack;
-  // private Chario chario;
 
    private static final SymbolEntry EMPTY_SYMBOL = new SymbolEntry("");
 
-   public SymbolTable(Chario c){
-   //   chario = c;
+   public SymbolTable(){
       reset();
    }
 
@@ -33,8 +31,8 @@ public class SymbolTable extends Object{
       Map<String, SymbolEntry> table = stack.peek();
       if (table.containsKey(id)){
     	 System.out.println("identifier already declared in this block");
-    	 System.exit(0);
-        // return EMPTY_SYMBOL;
+//    	 System.exit(0);
+       return EMPTY_SYMBOL;
       }
       else{
          SymbolEntry s = new SymbolEntry(id);
@@ -51,8 +49,8 @@ public class SymbolTable extends Object{
              return s;
       }
       System.out.println("undeclared identifier");
-      System.exit(0);
-      //return EMPTY_SYMBOL;
+      //System.exit(0);
+      return EMPTY_SYMBOL;
    }
          
    private void printTable(Map<String, SymbolEntry> table){
