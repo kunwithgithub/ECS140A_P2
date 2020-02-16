@@ -102,6 +102,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 	   public void caseADeclPart(ADeclPart node)
 	   {
 		   inADeclPart(node);
+		   if(node.getBasicDecl()!=null)
 		   {
 			   List<PBasicDecl> copy = new ArrayList<PBasicDecl>(node.getBasicDecl());
 			   for(PBasicDecl e : copy)
@@ -236,6 +237,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 				table.enterSymbol(key);
 			   	node.getIdent().apply(this);
 		   }
+		   if(node.getAnotherIdent()!=null)
 		   {
 			   List<PAnotherIdent> copy = new ArrayList<PAnotherIdent>(node.getAnotherIdent());
 			   for(PAnotherIdent e : copy)
@@ -302,6 +304,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 		   {
 			   node.getParamSpec().apply(this);
 		   }
+		   if(node.getAnotherParamSpec()!=null)
 		   {
 			   List<PAnotherParamSpec> copy = new ArrayList<PAnotherParamSpec>(node.getAnotherParamSpec());
 			   for(PAnotherParamSpec e : copy)
@@ -368,6 +371,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 		   {
 			   node.getStatement().apply(this);
 		   }
+		   if(node.getStatements()!=null)
 		   {
 			   List<PStatement> copy = new ArrayList<PStatement>(node.getStatements());
 			   for(PStatement e : copy)
@@ -593,6 +597,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 		   {
 			   node.getStmtSeq().apply(this);
 		   }
+		   if(node.getElseifClause()!=null)
 		   {
 			   List<PElseifClause> copy = new ArrayList<PElseifClause>(node.getElseifClause());
 			   for(PElseifClause e : copy)
@@ -726,6 +731,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 		   {
 			   node.getSimpleExpr().apply(this);
 		   }
+		   if(node.getAnotherParam()!=null)
 		   {
 			   List<PAnotherParam> copy = new ArrayList<PAnotherParam>(node.getAnotherParam());
 			   for(PAnotherParam e : copy)
