@@ -974,7 +974,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getSemi() != null)
         {
-            writer.write(";")
+            //writer.write(";")
             node.getSemi().apply(this);
         }
         outALoopStmt(node);
