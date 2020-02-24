@@ -86,7 +86,8 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getSubprogramSpec().apply(this);
         }
         if(node.getIs() != null)
-        {
+        {   
+        	writer.write("\n{\n");
             node.getIs().apply(this);
         }
         if(node.getDeclPart() != null)
@@ -95,7 +96,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getBegin() != null)
         {
-            writer.write("\n{\n");
+            //writer.write("\n{\n");
             node.getBegin().apply(this);
         }
         if(node.getStmtSeq() != null)
@@ -222,7 +223,8 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         inAObjectDecl(node);
         if(node.getIdentList() != null)
-        {
+        {   
+        	writer.write(node.getIdent().getText());
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -231,7 +233,9 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            //writer.write(node.getIdent().getText());
+        	//identifier list
+        	caseAIdentList(node);
             node.getIdent().apply(this);
         }
         if(node.getSemi() != null)
@@ -257,7 +261,8 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         inANumberDecl(node);
         if(node.getIdentList() != null)
-        {
+        {   
+        	writer.write(" const ");
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -267,7 +272,9 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getConst() != null)
         {
-            writer.write(" const ");
+            //writer.write(" const ");
+        	//call identifierlist
+        	caseAIdentList(node);
             node.getConst().apply(this);
         }
         if(node.getGets() != null)
@@ -275,10 +282,12 @@ public class CodeGeneration extends DepthFirstAdapter
             writer.write("=");
             node.getGets().apply(this);
         }
+        
         if(node.getSimpleExpr() != null)
         {
             node.getSimpleExpr().apply(this);
         }
+        
         if(node.getSemi() != null)
         {
             writer.write(";\n");
@@ -310,7 +319,8 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             List<PAnotherIdent> copy = new ArrayList<PAnotherIdent>(node.getAnotherIdent());
             for(PAnotherIdent e : copy)
-            {
+            {   
+            	writer.write(e.getText());
                 e.apply(this);
             }
         }
@@ -394,11 +404,14 @@ public class CodeGeneration extends DepthFirstAdapter
             writer.write("(");
             node.getLParen().apply(this);
         }
+        
         if(node.getParamSpec() != null)
         {
             
             node.getParamSpec().apply(this);
         }
+        
+        if(node.getAnotherParamSpec() != null)
         {
             List<PAnotherParamSpec> copy = new ArrayList<PAnotherParamSpec>(node.getAnotherParamSpec());
             for(PAnotherParamSpec e : copy)
@@ -429,7 +442,8 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         inAParamSpec(node);
         if(node.getIdentList() != null)
-        {
+        {   
+        	writer.write(node.getIdent().getText());
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -437,12 +451,15 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getColon().apply(this);
         }
         if(node.getOut() != null)
-        {
+        {   //No out parameters in java, but
+        	//there are reference type
             node.getOut().apply(this);
         }
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            //writer.write(node.getIdent().getText());
+        	//call identifier list
+        	caseAIdentList(node);
             node.getIdent().apply(this);
         }
         outAParamSpec(node);
@@ -464,9 +481,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAnotherParamSpec(node);
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            //writer.write(";\n");
+        	writer.write(",\n");
             node.getSemi().apply(this);
         }
+        
         if(node.getParamSpec() != null)
         {
             node.getParamSpec().apply(this);
@@ -492,6 +511,8 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             node.getStatement().apply(this);
         }
+        
+        if(node.getStatements()!=null)
         {
             List<PStatement> copy = new ArrayList<PStatement>(node.getStatements());
             for(PStatement e : copy)
@@ -686,7 +707,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inANullStmt(node);
         if(node.getNull() != null)
         {
-            writer.write("null");
+           // writer.write("null");
             node.getNull().apply(this);
         }
         if(node.getSemi() != null)
@@ -831,21 +852,26 @@ public class CodeGeneration extends DepthFirstAdapter
         inAIfStmt(node);
         if(node.getIf() != null)
         {
-            writer.write("if");
+            writer.write("if ");
             node.getIf().apply(this);
         }
         if(node.getRelation() != null)
-        {
+        {   
+        	writer.write("(");
             node.getRelation().apply(this);
+            writer.write(")");
         }
         if(node.getThen() != null)
-        {
+        {   
+        	writer.write("{");
             node.getThen().apply(this);
         }
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
         }
+        
+        if(node.getElseifClause()!=null)
         {
             List<PElseifClause> copy = new ArrayList<PElseifClause>(node.getElseifClause());
             for(PElseifClause e : copy)
@@ -853,12 +879,14 @@ public class CodeGeneration extends DepthFirstAdapter
                 e.apply(this);
             }
         }
+        
         if(node.getElseClause() != null)
         {
             node.getElseClause().apply(this);
         }
         if(node.getEndif() != null)
-        {
+        {   
+        	writer.write("}");
             node.getEndif().apply(this);
         }
         if(node.getSemi() != null)
@@ -1633,3 +1661,4 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
+
