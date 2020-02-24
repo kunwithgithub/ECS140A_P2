@@ -955,7 +955,8 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getRelation().apply(this);
         }
         if(node.getLoopStart() != null)
-        {
+        {   
+            writer.write("{\n");
             node.getLoopStart().apply(this);
         }
         if(node.getStmtSeq() != null)
@@ -968,6 +969,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getLoopEnd() != null)
         {
+            writer.write("}\n");
             node.getLoopEnd().apply(this);
         }
         if(node.getSemi() != null)
