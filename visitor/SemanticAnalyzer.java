@@ -175,7 +175,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter{
 			   TIdent id = node.getIdent();
 			   String key = id.getText();
 			   SymbolEntry entry = table.findSymbol(key);
-			   acceptRole()
+			   //acceptRole();
 			   node.getIdent().apply(this);
 		   }
 		   if(node.getSemi() != null)
