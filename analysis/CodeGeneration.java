@@ -305,6 +305,8 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         defaultOut(node);
     }
+    
+    
 
     @Override
     public void caseAIdentList(AIdentList node)
@@ -869,6 +871,7 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
+            writer,write("}")
         }
         
         if(node.getElseifClause()!=null)
@@ -886,12 +889,12 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getEndif() != null)
         {   
-        	writer.write("}");
+        	//writer.write("}");
             node.getEndif().apply(this);
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            //writer.write(";\n");
             node.getSemi().apply(this);
         }
         outAIfStmt(node);
@@ -917,18 +920,22 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getElseif().apply(this);
         }
         if(node.getRelation() != null)
-        {
+        {   
+        	writer.write("(");
             node.getRelation().apply(this);
+            writer.write(")");
         }
         if(node.getThen() != null)
         {
-        
+        	writer.write("{");
             node.getThen().apply(this);
         }
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
+            writer.write("}");
         }
+        
         outAElseifClause(node);
     }
 
@@ -952,8 +959,10 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getElse().apply(this);
         }
         if(node.getStmtSeq() != null)
-        {
+        {   
+        	writer.write("{");
             node.getStmtSeq().apply(this);
+            writer.write("}");
         }
         outAElseClause(node);
     }
@@ -979,8 +988,9 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getRelation() != null)
         {
-
+            writer.write("(")
             node.getRelation().apply(this);
+            writer.write(")")
         }
         if(node.getLoopStart() != null)
         {   
@@ -988,7 +998,7 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getLoopStart().apply(this);
         }
         if(node.getStmtSeq() != null)
-        {
+        {   
             node.getStmtSeq().apply(this);
         }
         if(node.getEnd() != null)
@@ -1018,7 +1028,7 @@ public class CodeGeneration extends DepthFirstAdapter
         defaultOut(node);
     }
 
-    @Override
+    @Override //Show_Birthday_Song("Ada", "Lovelace"); 
     public void caseAProcCallStmt(AProcCallStmt node)
     {
         inAProcCallStmt(node);
@@ -1058,10 +1068,13 @@ public class CodeGeneration extends DepthFirstAdapter
             writer.write("(");
             node.getLParen().apply(this);
         }
+        
         if(node.getSimpleExpr() != null)
         {
             node.getSimpleExpr().apply(this);
         }
+        
+        if(node.getAnotherParam()!=null)
         {
             List<PAnotherParam> copy = new ArrayList<PAnotherParam>(node.getAnotherParam());
             for(PAnotherParam e : copy)
@@ -1069,6 +1082,8 @@ public class CodeGeneration extends DepthFirstAdapter
                 e.apply(this);
             }
         }
+        
+        
         if(node.getRParen() != null)
         {
             writer.write(")");
@@ -1143,7 +1158,7 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         inARelationClause(node);
         if(node.getRelOp() != null)
-        {
+        {   //relation operater
             node.getRelOp().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -1661,4 +1676,3 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
-
