@@ -294,7 +294,7 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getIdentList() != null)
         {   
             try{
-                writer.write(" const ");
+                //writer.write(" const ");
             }catch(Exception e){
                 System.out.print(e);
             }
@@ -309,6 +309,7 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             try{
             writer.write(" const ");
+            	
             }catch(Exception e){
                 System.out.print(e);
             }
@@ -428,7 +429,8 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         inASubprogramSpec(node);
         if(node.getProc() != null)
-        {
+        {   
+        	System.out.print("a");
             try{
                 writer.write(" class ");
             }catch(Exception e){
