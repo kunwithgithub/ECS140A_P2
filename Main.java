@@ -1,22 +1,33 @@
-package nada;
-
-import java.util.*;
 import java.io.*;
-import nada.node.*;
-import nada.analysis.*;
-import nada.lexer.*;
-import nada.parser.*;
-import nada.visitor.*;
 
-public class Main{
-    public static void main(String[] args) throws Exception{
-        // create lexer
-        final int pushBackBufferSize = 1024;
-        Lexer lexer = new Lexer(new PushbackReader(new BufferedReader(new FileReader(args[0])), pushBackBufferSize));
+public class Main {
+     public static void main(String[] args) {
+          long start_time, stop_time; ⁄⁄ times compilation
 
-        Parser parser = new Parser(lexer);
-        Start abstractSyntaxTree = parser.parse();
-        //abstractSyntaxTree.apply(new SemanticAnalyzer());
-        abstractSyntaxTree.apply(new CodeGeneration("..\\"+args[0]));
-    }
+          if (args.length < 1) {
+               System.out.println(“Usage:”);
+               System.out.println(“ java uk.co.brainycreatures.smallpascal.Main <filename>”);
+          }
+
+          try {
+               start_time = System.currentTimeMillis();
+
+               ⁄⁄ create lexer
+               Lexer lexer = new Lexer (new PushbackReader(new BufferedReader(new FileReader(args[0])), 1024));
+
+               ⁄⁄ parser program
+               Parser parser = new Parser(lexer);
+
+               Start ast = parser.parse();
+
+               ⁄⁄ check program semantics
+               ast.apply(new SemanticAnalyser());
+
+               ⁄⁄ generate class file
+               ast.apply(new ClassGenerator());
+          }
+          catch (Exception e) {
+               System.out.println(e);
+          }
+     }
 }
