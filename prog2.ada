@@ -4,4 +4,3 @@ procedure TEST_ADA is
    null;
 
 end TEST_ADA;
-
