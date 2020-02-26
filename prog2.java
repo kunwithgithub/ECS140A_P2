@@ -2,7 +2,7 @@
 {
  final I=1;
  final J,K,P=2;
-INTEGER;
+INTEGER L;
 L=I+K;
 
 }
