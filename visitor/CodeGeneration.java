@@ -506,8 +506,13 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getOut().apply(this);
         }
         if(node.getIdent() != null)
-        {
-            keepWriting(node.getIdent().getText());
+        {   
+            keepWriting(node.getIdent().getText() + " ");
+            
+            for (int i = 0; i < identList.size(); i++) {
+                keepWriting(identList.get(i));
+            }
+            identList.clear();
         	//call identifier list
             node.getIdent().apply(this);
         }
@@ -533,7 +538,7 @@ public class CodeGeneration extends DepthFirstAdapter
             //keepWriting(";\n");
 
         	try{
-                keepWriting(",\n");
+                keepWriting(", ");
             }catch(Exception e){
                 System.out.print(e);
             }
@@ -699,6 +704,7 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getWriteStmt() != null)
         {
             node.getWriteStmt().apply(this);
+            
         }
         outAWriteSimpleStmt(node);
     }
@@ -1000,7 +1006,8 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         
         if(node.getElseClause() != null)
-        {
+        {   
+        	
             node.getElseClause().apply(this);
         }
         if(node.getEndif() != null)
@@ -1173,19 +1180,21 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getLoopEnd() != null)
         {
             try{
-                keepWriting("}\n");
+                keepWriting("}");
             }catch(Exception e){
                 System.out.print(e);
             }
             node.getLoopEnd().apply(this);
         }
         if(node.getSemi() != null)
-        {
+        {   
+        	/*
             try{
                 keepWriting(";");
             }catch(Exception e){
                 System.out.print(e);
             }
+            */
             node.getSemi().apply(this);
         }
         outALoopStmt(node);
@@ -1929,5 +1938,8 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
+
+
+
 
 
