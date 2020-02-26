@@ -6,6 +6,7 @@ import nada.node.*;
 import nada.analysis.*;
 import nada.lexer.*;
 import nada.parser.*;
+import nada.visitor.*;
 
 public class Main{
     public static void main(String[] args){
@@ -16,6 +17,6 @@ public class Main{
         Parser parser = new Parser(lexer);
         Start abstractSyntaxTree = parser.parse();
         //abstractSyntaxTree.apply(new SemanticAnalyzer());
-        abstractSyntaxTree.apply(new CodeGenerator(args[0]));
+        abstractSyntaxTree.apply(new CodeGeneration(args[0]));
     }
 }
