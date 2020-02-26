@@ -1,6 +1,10 @@
-procedure TEST_ADA is
-   begin
-   
-   null;
+procedure Test is
 
-end TEST_ADA;
+              I : constant := 1;
+             J,K,P : constant := 2;
+             
+            L : INTEGER;
+           begin
+            L := I + K;
+  
+end Test;

@@ -14,11 +14,13 @@ public class CodeGeneration extends DepthFirstAdapter
 {
     private String filename = "";
     private BufferedWriter writer;
+    private ArrayList<String> identList;
 
     public CodeGeneration(String filename){
         
     	
-    	this.filename = filename.replace(".ada",".java"); 
+        this.filename = filename.replace(".ada",".java"); 
+        identList = new ArrayList<String>();
         try { 
             writer = new BufferedWriter(new FileWriter(this.filename)); 
             keepWriting("");
@@ -143,20 +145,12 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getEnd().apply(this);
         }
         if(node.getIdent() != null)
-        {   try{
-            keepWriting(node.getIdent().getText());
-            }catch(Exception e){
-            System.out.print(e);
-            }
+        {   
             node.getIdent().apply(this);
         }
         if(node.getSemi() != null)
         {
-            try{
-                keepWriting(";\n");
-            }catch(Exception e){
-                System.out.print(e);
-            }
+
             node.getSemi().apply(this);
         }
         outASubprogramBody(node);
@@ -265,11 +259,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAObjectDecl(node);
         if(node.getIdentList() != null)
         {   
-            try{
-                keepWriting(node.getIdent().getText());
-            }catch(Exception e){
-                System.out.print(e);
-            }
+            
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -315,11 +305,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inANumberDecl(node);
         if(node.getIdentList() != null)
         {   
-            try{
-                //keepWriting(" const ");
-            }catch(Exception e){
-                System.out.print(e);
-            }
+
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -329,22 +315,17 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getConst() != null)
         {
-            try{
-            keepWriting(" const ");
-            	
-            }catch(Exception e){
-                System.out.print(e);
+            keepWriting(" final ");
+            for (int i = 0; i < identList.size(); i++) {
+                keepWriting(identList.get(i));
             }
+            identList.clear();
         	//call identifierlist
             node.getConst().apply(this);
         }
         if(node.getGets() != null)
         {
-            try{
-                keepWriting("=");
-            }catch(Exception e){
-                System.out.print(e);
-            }
+            keepWriting("=");
             node.getGets().apply(this);
         }
         
@@ -383,11 +364,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAIdentList(node);
         if(node.getIdent() != null)
         {
-            try{
-                keepWriting(node.getIdent().getText());
-            }catch(Exception e){
-                System.out.print(e);
-            }
+            identList.add(node.getIdent().getText());
             node.getIdent().apply(this);
         }
         if(node.getAnotherIdent()!=null)
@@ -417,20 +394,12 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAnotherIdent(node);
         if(node.getComma() != null)
         {
-            try{
-                keepWriting(",");
-            }catch(Exception e){
-                System.out.print(e);
-            }
+            identList.add(",");
             node.getComma().apply(this);
         }
         if(node.getIdent() != null)
         {
-            try{
-                keepWriting(node.getIdent().getText());
-            }catch(Exception e){
-                System.out.print(e);
-            }
+            identList.add(node.getIdent().getText());
             node.getIdent().apply(this);
         }
         outAAnotherIdent(node);
@@ -542,11 +511,6 @@ public class CodeGeneration extends DepthFirstAdapter
         inAParamSpec(node);
         if(node.getIdentList() != null)
         {   
-        	try{
-                keepWriting(node.getIdent().getText());
-            }catch(Exception e){
-                System.out.print(e);
-            }
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -560,11 +524,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getIdent() != null)
         {
-            try{
-                keepWriting(node.getIdent().getText());
-            }catch(Exception e){
-                System.out.print(e);
-            }
+            keepWriting(node.getIdent().getText());
         	//call identifier list
             node.getIdent().apply(this);
         }

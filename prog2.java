@@ -1,6 +1,8 @@
- class TEST_ADA
+ class Test
 {
-;
+ final I=1;
+ final J,K,P=2;
+INTEGER;
+L=I+K;
 
 }
-TEST_ADA;
