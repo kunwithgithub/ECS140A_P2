@@ -9,7 +9,7 @@ import nada.parser.*;
 import nada.visitor.*;
 
 public class Main{
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         // create lexer
         final int pushBackBufferSize = 1024;
         Lexer lexer = new Lexer(new PushbackReader(new BufferedReader(new FileReader(args[0])), pushBackBufferSize));
