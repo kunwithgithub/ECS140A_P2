@@ -18,13 +18,6 @@ public class CodeGeneration extends DepthFirstAdapter
 
     public CodeGeneration(String filename){
         this.filename = filename;
-        try{
-        file = new File(filename);
-        file.createNewFile();
-        writer = new FileWriter(file);
-        }catch(Exception e){
-            System.out.println(e);
-        }
     }
 
     public void inStart(Start node)

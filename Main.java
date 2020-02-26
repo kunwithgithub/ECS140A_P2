@@ -17,6 +17,6 @@ public class Main{
         Parser parser = new Parser(lexer);
         Start abstractSyntaxTree = parser.parse();
         //abstractSyntaxTree.apply(new SemanticAnalyzer());
-        abstractSyntaxTree.apply(new CodeGeneration(args[0]));
+        abstractSyntaxTree.apply(new CodeGeneration("..\\"+args[0]));
     }
 }
