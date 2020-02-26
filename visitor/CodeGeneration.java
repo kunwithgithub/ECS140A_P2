@@ -13,11 +13,32 @@ import nada.parser.*;
 public class CodeGeneration extends DepthFirstAdapter
 {
     private String filename = "";
-    private File file = null;
-    private FileWriter writer = null; 
+    private File file;
+    private FileWriter writer; 
 
     public CodeGeneration(String filename){
-        this.filename = filename;
+        
+    	
+    	this.filename = filename;
+    	//try {
+    		 
+       try {
+    		 
+    		 file = new File ("12.txt");
+    	     writer = new FileWriter (file);
+    		
+    		if(file.createNewFile())
+    		{
+    			System.out.println("File created successfully");
+    		}
+    		
+    		else
+    		{
+    			System.out.println("File already been created");
+    		}
+    	}catch (IOException e) {
+    		System.out.println(e);
+	  }
     }
 
     public void inStart(Start node)
@@ -1977,3 +1998,4 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
+
