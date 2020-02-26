@@ -12,10 +12,20 @@ import nada.parser.*;
 
 public class CodeGeneration extends DepthFirstAdapter
 {
-    private String filename = "nada.java";
+    private String filename = "";
     private File file = null;
     private FileWriter writer = null; 
 
+    public CodeGeneration(String filename){
+        this.filename = filename;
+        try{
+        file = new File(filename);
+        file.createNewFile();
+        writer = new FileWriter(file);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
 
     public void inStart(Start node)
     {
@@ -40,9 +50,7 @@ public class CodeGeneration extends DepthFirstAdapter
     @Override
     public void caseStart(Start node)
     {
-        file = new File(filename);
-        file.createNewFile();
-        writer = new FileWriter(file);
+
         inStart(node);
         node.getPNada().apply(this);
         node.getEOF().apply(this);
@@ -90,7 +98,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getIs() != null)
         {   
-        	writer.write("\n{\n");
+            try{
+                writer.write("\n{\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIs().apply(this);
         }
         if(node.getDeclPart() != null)
@@ -108,17 +120,28 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getEnd() != null)
         {
-            writer.write("\n}\n");
+            try{
+                writer.write("\n}\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getEnd().apply(this);
         }
         if(node.getIdent() != null)
-        {
+        {   try{
             writer.write(node.getIdent().getText());
+            }catch(Exception e){
+            System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outASubprogramBody(node);
@@ -227,7 +250,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAObjectDecl(node);
         if(node.getIdentList() != null)
         {   
-        	writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -236,14 +263,22 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
         	//identifier list
 
             node.getIdent().apply(this);
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{   
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outAObjectDecl(node);
@@ -265,7 +300,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inANumberDecl(node);
         if(node.getIdentList() != null)
         {   
-        	writer.write(" const ");
+            try{
+                writer.write(" const ");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -275,13 +314,21 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getConst() != null)
         {
+            try{
             writer.write(" const ");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         	//call identifierlist
             node.getConst().apply(this);
         }
         if(node.getGets() != null)
         {
-            writer.write("=");
+            try{
+                writer.write("=");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getGets().apply(this);
         }
         
@@ -292,7 +339,11 @@ public class CodeGeneration extends DepthFirstAdapter
         
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outANumberDecl(node);
@@ -316,7 +367,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAIdentList(node);
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         if(node.getAnotherIdent()!=null)
@@ -324,7 +379,6 @@ public class CodeGeneration extends DepthFirstAdapter
             List<PAnotherIdent> copy = new ArrayList<PAnotherIdent>(node.getAnotherIdent());
             for(PAnotherIdent e : copy)
             {   
-            	writer.write(e.getText());
                 e.apply(this);
             }
         }
@@ -347,12 +401,20 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAnotherIdent(node);
         if(node.getComma() != null)
         {
-            writer.write(",");
+            try{
+                writer.write(",");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getComma().apply(this);
         }
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         outAAnotherIdent(node);
@@ -374,12 +436,21 @@ public class CodeGeneration extends DepthFirstAdapter
         inASubprogramSpec(node);
         if(node.getProc() != null)
         {
-            writer.write(" class ");
+            try{
+                writer.write(" class ");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getProc().apply(this);
         }
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         if(node.getFormalPart() != null)
@@ -405,7 +476,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAFormalPart(node);
         if(node.getLParen() != null)
         {
-            writer.write("(");
+            try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLParen().apply(this);
         }
         
@@ -425,7 +500,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRParen().apply(this);
         }
         outAFormalPart(node);
@@ -447,7 +526,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAParamSpec(node);
         if(node.getIdentList() != null)
         {   
-        	writer.write(node.getIdent().getText());
+        	try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdentList().apply(this);
         }
         if(node.getColon() != null)
@@ -461,7 +544,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
         	//call identifier list
             node.getIdent().apply(this);
         }
@@ -485,7 +572,12 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getSemi() != null)
         {
             //writer.write(";\n");
-        	writer.write(",\n");
+
+        	try{
+                writer.write(",\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         
@@ -715,7 +807,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outANullStmt(node);
@@ -737,12 +833,20 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAssignStmt(node);
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         if(node.getGets() != null)
         {
-            writer.write("=");
+            try{
+                writer.write("=");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getGets().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -751,7 +855,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outAAssignStmt(node);
@@ -773,12 +881,20 @@ public class CodeGeneration extends DepthFirstAdapter
         inAWriteWriteStmt(node);
         if(node.getWrite() != null)
         {
-            writer.write("System.out.print");
+            try{
+                writer.write("System.out.print");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getWrite().apply(this);
         }
         if(node.getLParen() != null)
         {
-            writer.write("(");
+            try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLParen().apply(this);
         }
         if(node.getWriteExpr() != null)
@@ -787,12 +903,20 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRParen().apply(this);
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outAWriteWriteStmt(node);
@@ -814,12 +938,20 @@ public class CodeGeneration extends DepthFirstAdapter
         inAWritelnWriteStmt(node);
         if(node.getWriteln() != null)
         {
-            writer.write("System.out.println");
+            try{
+                writer.write("System.out.println");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getWriteln().apply(this);
         }
         if(node.getLParen() != null)
         {
-            writer.write("(");
+            try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLParen().apply(this);
         }
         if(node.getWriteExpr() != null)
@@ -828,12 +960,20 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRParen().apply(this);
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outAWritelnWriteStmt(node);
@@ -855,24 +995,44 @@ public class CodeGeneration extends DepthFirstAdapter
         inAIfStmt(node);
         if(node.getIf() != null)
         {
-            writer.write("if ");
+            try{
+                writer.write("if ");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIf().apply(this);
         }
         if(node.getRelation() != null)
         {   
-        	writer.write("(");
+        	try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRelation().apply(this);
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         }
         if(node.getThen() != null)
         {   
-        	writer.write("{");
+        	try{
+                writer.write("{");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getThen().apply(this);
         }
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
-            writer.write("}");
+            try{
+                writer.write("}");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         }
         
         if(node.getElseifClause()!=null)
@@ -917,24 +1077,44 @@ public class CodeGeneration extends DepthFirstAdapter
         inAElseifClause(node);
         if(node.getElseif() != null)
         {
-            writer.write("else if");
+            try{
+                writer.write("else if");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getElseif().apply(this);
         }
         if(node.getRelation() != null)
         {   
-        	writer.write("(");
+        	try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRelation().apply(this);
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         }
         if(node.getThen() != null)
         {
-        	writer.write("{");
+        	try{
+                writer.write("{");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getThen().apply(this);
         }
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
-            writer.write("}");
+            try{
+                writer.write("}");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         }
         
         outAElseifClause(node);
@@ -956,14 +1136,26 @@ public class CodeGeneration extends DepthFirstAdapter
         inAElseClause(node);
         if(node.getElse() != null)
         {
-            writer.write("else");
+            try{
+                writer.write("else");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getElse().apply(this);
         }
         if(node.getStmtSeq() != null)
         {   
-        	writer.write("{");
+        	try{
+                writer.write("{");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getStmtSeq().apply(this);
-            writer.write("}");
+            try{
+                writer.write("}");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         }
         outAElseClause(node);
     }
@@ -984,18 +1176,35 @@ public class CodeGeneration extends DepthFirstAdapter
         inALoopStmt(node);
         if(node.getWhile() != null)
         {
-            writer.write("while");
+            try{
+                writer.write("while");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getWhile().apply(this);
         }
         if(node.getRelation() != null)
         {
-            writer.write("(");
+            try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRelation().apply(this);
-            writer.write(")");
+            
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
         }
         if(node.getLoopStart() != null)
         {   
-            writer.write("{\n");
+            try{
+                writer.write("{\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLoopStart().apply(this);
         }
         if(node.getStmtSeq() != null)
@@ -1008,12 +1217,20 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getLoopEnd() != null)
         {
-            writer.write("}\n");
+            try{
+                writer.write("}\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLoopEnd().apply(this);
         }
         if(node.getSemi() != null)
         {
-            //writer.write(";")
+            try{
+                writer.write(";");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outALoopStmt(node);
@@ -1035,7 +1252,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAProcCallStmt(node);
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         if(node.getActualParamPart() != null)
@@ -1044,7 +1265,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getSemi() != null)
         {
-            writer.write(";\n");
+            try{
+                writer.write(";\n");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getSemi().apply(this);
         }
         outAProcCallStmt(node);
@@ -1066,7 +1291,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAActualParamPart(node);
         if(node.getLParen() != null)
         {
-            writer.write("(");
+            try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLParen().apply(this);
         }
         
@@ -1087,7 +1316,11 @@ public class CodeGeneration extends DepthFirstAdapter
         
         if(node.getRParen() != null)
         {
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRParen().apply(this);
         }
         outAActualParamPart(node);
@@ -1109,7 +1342,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAnotherParam(node);
         if(node.getComma() != null)
         {
-            writer.write(",");
+            try{
+                writer.write(",");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getComma().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -1185,7 +1422,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAStringLitWriteExpr(node);
         if(node.getStringLit() != null)
         {
-            writer.write(node.getStringLit().getText());
+            try{
+                writer.write(node.getStringLit().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getStringLit().apply(this);
         }
         outAStringLitWriteExpr(node);
@@ -1328,6 +1569,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAFactorFactor(node);
         if(node.getPrimary() != null)
         {
+
             node.getPrimary().apply(this);
         }
         outAFactorFactor(node);
@@ -1349,12 +1591,15 @@ public class CodeGeneration extends DepthFirstAdapter
         inANegPrimFactor(node);
         if(node.getMinus() != null)
         {
-            writer.write("-");
+            try{
+                writer.write("-");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getMinus().apply(this);
         }
         if(node.getPrimary() != null)
         {
-            writer.write(node.getPrimary().getText());
             node.getPrimary().apply(this);
         }
         outANegPrimFactor(node);
@@ -1376,7 +1621,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inANumLitPrimary(node);
         if(node.getNumberLit() != null)
         {
-            writer.write(node.getNumberLit().getText());
+            try{
+                writer.write(node.getNumberLit().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getNumberLit().apply(this);
         }
         outANumLitPrimary(node);
@@ -1398,7 +1647,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inANamePrimary(node);
         if(node.getIdent() != null)
         {
-            writer.write(node.getIdent().getText());
+            try{
+                writer.write(node.getIdent().getText());
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getIdent().apply(this);
         }
         outANamePrimary(node);
@@ -1420,7 +1673,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAExprPrimary(node);
         if(node.getLParen() != null)
         {
-            writer.write("(");
+            try{
+                writer.write("(");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLParen().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -1429,7 +1686,11 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            writer.write(")");
+            try{
+                writer.write(")");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getRParen().apply(this);
         }
         outAExprPrimary(node);
@@ -1451,7 +1712,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAEqRelOp(node);
         if(node.getEq() != null)
         {
-            writer.write("==");
+            try{
+                writer.write("==");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getEq().apply(this);
         }
         outAEqRelOp(node);
@@ -1473,7 +1738,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inANeqRelOp(node);
         if(node.getNeq() != null)
         {
-            writer.write("!=");
+            try{
+                writer.write("!=");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getNeq().apply(this);
         }
         outANeqRelOp(node);
@@ -1495,7 +1764,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inALtRelOp(node);
         if(node.getLt() != null)
         {
-            writer.write("<");
+            try{
+                writer.write("<");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLt().apply(this);
         }
         outALtRelOp(node);
@@ -1517,7 +1790,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inALeRelOp(node);
         if(node.getLe() != null)
         {
-            writer.write("<=");
+            try{
+                writer.write("<=");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getLe().apply(this);
         }
         outALeRelOp(node);
@@ -1539,7 +1816,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAGtRelOp(node);
         if(node.getGt() != null)
         {
-            writer.write(">");
+            try{
+                writer.write(">");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getGt().apply(this);
         }
         outAGtRelOp(node);
@@ -1561,7 +1842,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAGeRelOp(node);
         if(node.getGe() != null)
         {
-            writer.write(">=");
+            try{
+                writer.write(">=");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getGe().apply(this);
         }
         outAGeRelOp(node);
@@ -1583,7 +1868,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAPlusAddOp(node);
         if(node.getPlus() != null)
         {
-            writer.write("+");
+            try{
+                writer.write("+");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getPlus().apply(this);
         }
         outAPlusAddOp(node);
@@ -1605,7 +1894,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAMinusAddOp(node);
         if(node.getMinus() != null)
         {
-            writer.write("-");
+            try{
+                writer.write("-");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getMinus().apply(this);
         }
         outAMinusAddOp(node);
@@ -1627,7 +1920,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAMultMulOp(node);
         if(node.getMult() != null)
         {
-            writer.write("*");
+            try{
+                writer.write("*");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getMult().apply(this);
         }
         outAMultMulOp(node);
@@ -1649,7 +1946,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inADivMulOp(node);
         if(node.getDiv() != null)
         {
-            writer.write("/");
+            try{
+                writer.write("/");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getDiv().apply(this);
         }
         outADivMulOp(node);
@@ -1671,7 +1972,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAModMulOp(node);
         if(node.getMod() != null)
         {
-            writer.write("%");
+            try{
+                writer.write("%");
+            }catch(Exception e){
+                System.out.print(e);
+            }
             node.getMod().apply(this);
         }
         outAModMulOp(node);
