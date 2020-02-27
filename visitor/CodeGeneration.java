@@ -266,7 +266,7 @@ public class CodeGeneration extends DepthFirstAdapter
 
         if(node.getIdent() != null)
         {
-            keepWriting(node.getIdent().getText());
+            keepWriting(" int ");
         	//identifier list
 
             node.getIdent().apply(this);

@@ -3,16 +3,16 @@ TEST
 {
  final int COLUMN_MAX=10;
  final int ROW_MAX=COLUMN_MAX;
-MATRIX A;
-INTEGER I;
+ int  A;
+ int  I;
  static class INIT_MATRIX{
 INIT_MATRIX(INTEGER X, MATRIX Y)
 {
-INTEGER I,J;
+ int  I,J;
  static class INIT_MATRIX1{
 INIT_MATRIX1(INTEGER X, MATRIX Y)
 {
-INTEGER I,J;
+ int  I,J;
 I=1;
 while(I<=COLUMN_MAX){
 J=1;
