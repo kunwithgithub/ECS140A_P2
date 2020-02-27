@@ -682,8 +682,12 @@ public class CodeGeneration extends DepthFirstAdapter
     {
         inAProcCallStmtSimpleStmt(node);
         if(node.getProcCallStmt() != null)
-        {
+        {   
+            String mainFunction = "\n public static void main(String[] args)";
+            keepWriting(mainFunction);
+            keepWriting("\n{\n");
             node.getProcCallStmt().apply(this);
+            keepWriting("\n}\n");
         }
         outAProcCallStmtSimpleStmt(node);
     }
