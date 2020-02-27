@@ -538,10 +538,18 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getIdent() != null)
         {   
             if(outExists==false){
-                keepWriting("int ");
+                //keepWriting("int ");
             
             for (int i = 0; i < identList.size(); i++) {
-                keepWriting(identList.get(i));
+            	if(identList.get(i) == ",")
+            	{
+            		keepWriting(", ");
+            	}
+            	
+            	else 
+            	{
+                  keepWriting("int " + identList.get(i));
+            	}
             }
             
             //call identifier list
@@ -1777,5 +1785,8 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
+
+
+
 
 
