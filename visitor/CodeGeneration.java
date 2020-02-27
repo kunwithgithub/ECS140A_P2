@@ -15,6 +15,7 @@ public class CodeGeneration extends DepthFirstAdapter
     private String filename = "";
     private BufferedWriter writer;
     private ArrayList<String> identList;
+    private int time = 1;
 
     public CodeGeneration(String filename){
         
@@ -136,11 +137,14 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             node.getStmtSeq().apply(this);
         }
+        
         if(node.getEnd() != null)
         {
             keepWriting("\n}\n");
+            time--;
             node.getEnd().apply(this);
         }
+        
         if(node.getIdent() != null)
         {   
             node.getIdent().apply(this);
@@ -310,7 +314,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getConst() != null)
         {
-            keepWriting(" final ");
+            keepWriting(" final int ");
         	//call identifierlist
             node.getConst().apply(this);
         }
@@ -413,13 +417,30 @@ public class CodeGeneration extends DepthFirstAdapter
         inASubprogramSpec(node);
         if(node.getProc() != null)
         {   
+        	if(time == 1)
+          {
             try{
                 keepWriting(" class ");
+                time++;
             }catch(Exception e){
                 System.out.print(e);
             }
             node.getProc().apply(this);
-        }
+          } 
+            
+        	else if(time > 1)
+            {
+            	try {
+            		keepWriting(" static class ");
+            		time++;
+            	}catch(Exception e){
+                    System.out.print(e);
+                }
+            	node.getProc().apply(this);
+            }
+          }
+          
+          
         if(node.getIdent() != null)
         {
             keepWriting(node.getIdent().getText());
@@ -1938,8 +1959,5 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
-
-
-
 
 
