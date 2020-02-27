@@ -16,6 +16,8 @@ public class CodeGeneration extends DepthFirstAdapter
     private BufferedWriter writer;
     private ArrayList<String> identList;
     private int time = 1;
+    private String hold_constrcutor = "";
+    private int hold_bracket = 1;
 
     public CodeGeneration(String filename){
         
@@ -117,7 +119,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getIs() != null)
         {   
-            keepWriting("\n{\n");
+            //keepWriting("\n{\n");
             node.getIs().apply(this);
         }
         if(node.getDeclPart() != null)
@@ -127,6 +129,7 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getBegin() != null)
         {
             //keepWriting("\n{\n");
+        	
             node.getBegin().apply(this);
         }
         if(node.getStmtSeq() != null)
@@ -135,8 +138,14 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         
         if(node.getEnd() != null)
-        {
-            keepWriting("\n}\n");
+        {   
+        	if(hold_bracket > 1)
+        	{
+        		keepWriting("\n}\n");
+        		hold_bracket--;
+        	}
+            
+        	keepWriting("\n}\n");
             time--;
             node.getEnd().apply(this);
         }
@@ -432,13 +441,18 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getIdent() != null)
         {
             keepWriting(node.getIdent().getText());
+            hold_constrcutor = node.getIdent().getText();
             keepWriting("{\n");
-            keepWriting(node.getIdent().getText());
+            //keepWriting(node.getIdent().getText());
             node.getIdent().apply(this);
         }
+        
         if(node.getFormalPart() != null)
         {
             node.getFormalPart().apply(this);
+            keepWriting("{\n");
+            hold_bracket++;
+
         }
         outASubprogramSpec(node);
     }
@@ -459,7 +473,8 @@ public class CodeGeneration extends DepthFirstAdapter
         inAFormalPart(node);
         if(node.getLParen() != null)
         {
-            
+            keepWriting(hold_constrcutor);
+            hold_constrcutor = "";
             keepWriting("(");
             node.getLParen().apply(this);
         }
