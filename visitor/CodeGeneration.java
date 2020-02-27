@@ -17,6 +17,8 @@ public class CodeGeneration extends DepthFirstAdapter
     private ArrayList<String> identList;
     private int time;
     private String hold_constrcutor;
+    private String hold_string;
+    private String main_constructor;
     private int hold_bracket;
     private boolean outExists;
 
@@ -26,6 +28,7 @@ public class CodeGeneration extends DepthFirstAdapter
         this.filename = filename.replace(".ada",".java"); 
         outExists = false;
         hold_constrcutor = "";
+        main_constructor = "";
         hold_bracket = 1;
         time = 1;
         identList = new ArrayList<String>();
@@ -134,18 +137,21 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getBegin() != null)
         {
             //keepWriting("\n{\n");
-        	
+            keepWriting(hold_string);
+            hold_string = "";
             node.getBegin().apply(this);
         }
         if(node.getStmtSeq() != null)
         {   
         	if(time == 2)
         	{
-        	 String mainFunction = "\n public static void main(String[] args)";
-             keepWriting(mainFunction);
+        	 String mainConstructor = "\n"+main_constructor+"()";
+             keepWriting(mainConstructor);
              keepWriting("\n{\n");
              node.getStmtSeq().apply(this);
              keepWriting("\n}\n");
+             String mainFunction = "\n public static void main(String[] args){ "+main_constructor+" mainConstructor " +"= new "+main_constructor+"();}";
+             keepWriting(mainFunction);
         	}
         		
         	else {
@@ -458,6 +464,9 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             keepWriting(node.getIdent().getText());
             hold_constrcutor = node.getIdent().getText();
+            if(time == 2){
+                main_constructor = hold_constrcutor;
+            }
             keepWriting("{\n");
             //keepWriting(node.getIdent().getText());
             node.getIdent().apply(this);
@@ -466,7 +475,7 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getFormalPart() != null)
         {
             node.getFormalPart().apply(this);
-            keepWriting("{\n");
+            hold_string+="{\n";
             hold_bracket++;
 
         }
@@ -489,9 +498,9 @@ public class CodeGeneration extends DepthFirstAdapter
         inAFormalPart(node);
         if(node.getLParen() != null)
         {
-            keepWriting(hold_constrcutor);
+            hold_string = hold_constrcutor;
             hold_constrcutor = "";
-            keepWriting("(");
+            hold_string+="(";
             node.getLParen().apply(this);
         }
         
@@ -511,7 +520,7 @@ public class CodeGeneration extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            keepWriting(")");
+            hold_string+=")";
             node.getRParen().apply(this);
         }
         outAFormalPart(node);
@@ -554,12 +563,12 @@ public class CodeGeneration extends DepthFirstAdapter
             for (int i = 0; i < identList.size(); i++) {
             	if(identList.get(i) == ",")
             	{
-            		keepWriting(", ");
+            		hold_string+=", ";
             	}
             	
             	else 
             	{
-                  keepWriting("int " + identList.get(i));
+                    hold_string=hold_string+"int " + identList.get(i);
             	}
             }
             

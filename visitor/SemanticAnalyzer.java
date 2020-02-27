@@ -14,12 +14,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 {
 
     private ArrayList<String> identList;
-
+	private SymbolTable table;
 
     public SemanticAnalyzer(){
 		initTable();
 		identList = new ArrayList<String>();       
-    }
+	}
+	
+	private void initTable(){
+		table = new SymbolTable();
+		
+		SymbolEntry entry = table.enterSymbol("INTEGER");
+		entry.setRole(SymbolEntry.TYPE);
+	   }
 
     public void inStart(Start node)
     {
@@ -93,7 +100,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getIs() != null)
         {   
-            //keepWriting("\n{\n");
             node.getIs().apply(this);
         }
         if(node.getDeclPart() != null)
@@ -102,7 +108,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getBegin() != null)
         {
-            //keepWriting("\n{\n");
         	
             node.getBegin().apply(this);
         }
@@ -123,6 +128,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 			TIdent id = node.getIdent();
 			String key = id.getText();
 			SymbolEntry entry = table.findSymbol(key);
+			acceptRole(entry,SymbolEntry.PROC,"must be a procedure name");
             node.getIdent().apply(this);
         }
         if(node.getSemi() != null)
@@ -253,12 +259,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 				System.exit(0);
 			}
 			SymbolEntry entry = table.findSymbol(key);
-			//acceptRole();
             node.getIdent().apply(this);
 		}
 		SymbolEntry list = null;
         for (int i = 0; i < identList.size(); i++) {
-			list.append(table.findSymbol(identList.get(i)));
+			list.append(table.enterSymbol(identList.get(i)));
 		}
 		list.setRole(SymbolEntry.VAR);
         identList.clear();
@@ -396,33 +401,22 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inASubprogramSpec(node);
         if(node.getProc() != null)
         {   
-        	if(time == 1)
-          {
-            time++;
+
             node.getProc().apply(this);
-          } 
-            
-        	else if(time > 1)
-            {
-            	time++;
-            	node.getProc().apply(this);
-            }
-          }
           
-          
+		}
         if(node.getIdent() != null)
         {
 			TIdent id = node.getIdent();
 			String key = id.getText();
-			SymbolEntry entry = table.findSymbol(key);
+			SymbolEntry entry = table.enterSymbol(key);
+			entry.setRole(SymbolEntry.PROC);
             node.getIdent().apply(this);
         }
         
         if(node.getFormalPart() != null)
         {
             node.getFormalPart().apply(this);
-            keepWriting("{\n");
-            hold_bracket++;
 
         }
         outASubprogramSpec(node);
@@ -490,24 +484,26 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         {
             node.getColon().apply(this);
         }
-         outExists = false;
         if(node.getOut() != null)
         {   //No out parameters in java, but
         	//there are reference type
             node.getOut().apply(this);
-            outExists = true;
         }
         if(node.getIdent() != null)
         {   
-
+			
+			symbolEntry list = null;
             for (int i = 0; i < identList.size(); i++) {
-                keepWriting(identList.get(i));
+				list.append(identList.get(i));
             }
+			list.setRole(SymbolEntry.PARAM);
+			String key = node.getIdent().getText();
+			SymbolEntry entry = table.findSymbol(key);
+			acceptRole(entry,SymbolEntry.TYPE,"Must be a type name");
 
             node.getIdent().apply(this);
         }
         identList.clear();
-        outExists = false;
         outAParamSpec(node);
     }
 
@@ -527,7 +523,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAAnotherParamSpec(node);
         if(node.getSemi() != null)
         {
-            //keepWriting(";\n");
 
         	identList.add(",");
             node.getSemi().apply(this);
@@ -670,11 +665,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAProcCallStmtSimpleStmt(node);
         if(node.getProcCallStmt() != null)
         {   
-            String mainFunction = "\n public static void main(String[] args)";
-            keepWriting(mainFunction);
-            keepWriting("\n{\n");
             node.getProcCallStmt().apply(this);
-            keepWriting("\n}\n");
         }
         outAProcCallStmtSimpleStmt(node);
     }
@@ -759,12 +750,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inANullStmt(node);
         if(node.getNull() != null)
         {
-           // keepWriting("null");
             node.getNull().apply(this);
         }
         if(node.getSemi() != null)
         {
-            keepWriting(";\n");
             node.getSemi().apply(this);
         }
         outANullStmt(node);
@@ -786,12 +775,14 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAAssignStmt(node);
         if(node.getIdent() != null)
         {
-            keepWriting(node.getIdent().getText());
+			Set<Integer> temp = new HashSet<Integer>();
+			temp.addAll(Arrays.asList(SymbolEntry.VAR, SymbolEntry.PARAM));
+			SymbolEntry entry = findSymbol(node.getIdent().getText());
+			acceptRole(entry, temp, "Must be a variable or parameter name");
             node.getIdent().apply(this);
         }
         if(node.getGets() != null)
         {
-            keepWriting("=");
             node.getGets().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -800,7 +791,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getSemi() != null)
         {
-            keepWriting(";\n");
             node.getSemi().apply(this);
         }
         outAAssignStmt(node);
@@ -822,12 +812,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAWriteWriteStmt(node);
         if(node.getWrite() != null)
         {
-            keepWriting("System.out.print");
             node.getWrite().apply(this);
         }
         if(node.getLParen() != null)
         {
-            keepWriting("(");
             node.getLParen().apply(this);
         }
         if(node.getWriteExpr() != null)
@@ -836,12 +824,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            keepWriting(")");
             node.getRParen().apply(this);
         }
         if(node.getSemi() != null)
         {
-            keepWriting(";\n");
             node.getSemi().apply(this);
         }
         outAWriteWriteStmt(node);
@@ -863,12 +849,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAWritelnWriteStmt(node);
         if(node.getWriteln() != null)
         {
-            keepWriting("System.out.println");
             node.getWriteln().apply(this);
         }
         if(node.getLParen() != null)
         {
-            keepWriting("(");
             node.getLParen().apply(this);
         }
         if(node.getWriteExpr() != null)
@@ -877,12 +861,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            keepWriting(")");
             node.getRParen().apply(this);
         }
         if(node.getSemi() != null)
         {
-            keepWriting(";\n");
             node.getSemi().apply(this);
         }
         outAWritelnWriteStmt(node);
@@ -904,24 +886,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAIfStmt(node);
         if(node.getIf() != null)
         {
-            keepWriting("if ");
             node.getIf().apply(this);
         }
         if(node.getRelation() != null)
         {   
-        	keepWriting("(");
             node.getRelation().apply(this);
-            keepWriting(")");
         }
         if(node.getThen() != null)
         {   
-        	keepWriting("{");
             node.getThen().apply(this);
         }
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
-            keepWriting("}");
         }
         
         if(node.getElseifClause()!=null)
@@ -967,24 +944,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAElseifClause(node);
         if(node.getElseif() != null)
         {
-            keepWriting("else if");
             node.getElseif().apply(this);
         }
         if(node.getRelation() != null)
         {   
-        	keepWriting("(");
             node.getRelation().apply(this);
-            keepWriting(")");
         }
         if(node.getThen() != null)
         {
-        	keepWriting("{");
             node.getThen().apply(this);
         }
         if(node.getStmtSeq() != null)
         {
             node.getStmtSeq().apply(this);
-            keepWriting("}");
         }
         
         outAElseifClause(node);
@@ -1006,14 +978,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAElseClause(node);
         if(node.getElse() != null)
         {
-            keepWriting("else");
             node.getElse().apply(this);
         }
         if(node.getStmtSeq() != null)
         {   
-        	keepWriting("{");
             node.getStmtSeq().apply(this);
-            keepWriting("}");
         }
         outAElseClause(node);
     }
@@ -1034,19 +1003,15 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inALoopStmt(node);
         if(node.getWhile() != null)
         {
-            keepWriting("while");
             node.getWhile().apply(this);
         }
         if(node.getRelation() != null)
         {
-            keepWriting("(");
             node.getRelation().apply(this);
             
-            keepWriting(")");
         }
         if(node.getLoopStart() != null)
         {   
-            keepWriting("{\n");
             node.getLoopStart().apply(this);
         }
         if(node.getStmtSeq() != null)
@@ -1059,7 +1024,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getLoopEnd() != null)
         {
-            keepWriting("}");
             node.getLoopEnd().apply(this);
         }
         if(node.getSemi() != null)
@@ -1092,9 +1056,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAProcCallStmt(node);
         if(node.getIdent() != null)
         {
-            keepWriting(" new ");
-            keepWriting(node.getIdent().getText());
-            node.getIdent().apply(this);
+			TIdent id = node.getIdent();
+			String key = id.getText();
+			SymbolEntry entry = table.findSymbol(key);
+			acceptRole(entry,SymbolEntry.PROC,"must be a procedure name");
+			node.getIdent().apply(this);
         }
         if(node.getActualParamPart() != null)
         {
@@ -1102,7 +1068,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getSemi() != null)
         {
-            keepWriting(";\n");
             node.getSemi().apply(this);
         }
         outAProcCallStmt(node);
@@ -1124,7 +1089,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAActualParamPart(node);
         if(node.getLParen() != null)
         {
-            keepWriting("(");
             node.getLParen().apply(this);
         }
         
@@ -1145,7 +1109,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         
         if(node.getRParen() != null)
         {
-            keepWriting(")");
             node.getRParen().apply(this);
         }
         outAActualParamPart(node);
@@ -1167,7 +1130,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAAnotherParam(node);
         if(node.getComma() != null)
         {
-            identList.add(",");
             node.getComma().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -1243,7 +1205,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAStringLitWriteExpr(node);
         if(node.getStringLit() != null)
         {
-            keepWriting(node.getStringLit().getText());
             node.getStringLit().apply(this);
         }
         outAStringLitWriteExpr(node);
@@ -1408,7 +1369,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inANegPrimFactor(node);
         if(node.getMinus() != null)
         {
-            keepWriting("-");
             node.getMinus().apply(this);
         }
         if(node.getPrimary() != null)
@@ -1434,7 +1394,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inANumLitPrimary(node);
         if(node.getNumberLit() != null)
         {
-            keepWriting(node.getNumberLit().getText());
             node.getNumberLit().apply(this);
         }
         outANumLitPrimary(node);
@@ -1456,7 +1415,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inANamePrimary(node);
         if(node.getIdent() != null)
         {
-            keepWriting(node.getIdent().getText());
+			TIdent id = node.getIdent();
+			String key = id.getText();
+			SymbolEntry entry = table.findSymbol(key);
+			Set<Integer> temp = new HashSet<Integer>();
+			acceptRole(entry,temp,"must be a parameter variable name");
             node.getIdent().apply(this);
         }
         outANamePrimary(node);
@@ -1478,7 +1441,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAExprPrimary(node);
         if(node.getLParen() != null)
         {
-            keepWriting("(");
+            
             node.getLParen().apply(this);
         }
         if(node.getSimpleExpr() != null)
@@ -1487,7 +1450,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         }
         if(node.getRParen() != null)
         {
-            keepWriting(")");
+            
             node.getRParen().apply(this);
         }
         outAExprPrimary(node);
@@ -1509,7 +1472,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAEqRelOp(node);
         if(node.getEq() != null)
         {
-            keepWriting("==");
+           
             node.getEq().apply(this);
         }
         outAEqRelOp(node);
@@ -1531,7 +1494,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inANeqRelOp(node);
         if(node.getNeq() != null)
         {
-            keepWriting("!=");
+            
             node.getNeq().apply(this);
         }
         outANeqRelOp(node);
@@ -1553,7 +1516,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inALtRelOp(node);
         if(node.getLt() != null)
         {
-            keepWriting("<");
+            
             node.getLt().apply(this);
         }
         outALtRelOp(node);
@@ -1575,7 +1538,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inALeRelOp(node);
         if(node.getLe() != null)
         {
-            keepWriting("<=");
+           
             node.getLe().apply(this);
         }
         outALeRelOp(node);
@@ -1597,7 +1560,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAGtRelOp(node);
         if(node.getGt() != null)
         {
-            keepWriting(">");
+           
             node.getGt().apply(this);
         }
         outAGtRelOp(node);
@@ -1619,7 +1582,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAGeRelOp(node);
         if(node.getGe() != null)
         {
-            keepWriting(">=");
+           
             node.getGe().apply(this);
         }
         outAGeRelOp(node);
@@ -1641,7 +1604,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAPlusAddOp(node);
         if(node.getPlus() != null)
         {
-            keepWriting("+");
+           
             node.getPlus().apply(this);
         }
         outAPlusAddOp(node);
@@ -1663,7 +1626,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAMinusAddOp(node);
         if(node.getMinus() != null)
         {
-            keepWriting("-");
+            
             node.getMinus().apply(this);
         }
         outAMinusAddOp(node);
@@ -1685,7 +1648,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAMultMulOp(node);
         if(node.getMult() != null)
         {
-            keepWriting("*");
+            
             node.getMult().apply(this);
         }
         outAMultMulOp(node);
@@ -1707,7 +1670,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inADivMulOp(node);
         if(node.getDiv() != null)
         {
-            keepWriting("/");
             node.getDiv().apply(this);
         }
         outADivMulOp(node);
@@ -1729,7 +1691,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAModMulOp(node);
         if(node.getMod() != null)
         {
-            keepWriting("%");
             node.getMod().apply(this);
         }
         outAModMulOp(node);

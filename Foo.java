@@ -2,8 +2,8 @@ public class Foo{
  int  I;
  final int Var=2;
 public class Bar{
- int  z;
 Bar(int x, int y){
+ int  z;
 System.out.println(I);
 
 }
