@@ -1,13 +1,10 @@
-procedure Show_Increment is
-   A, B, C : Integer;
-
-   procedure Display_Result is
-   begin
-   end Display_Result;
+procedure test2 is
+	procedure Sum(A,B: Integer) is
+	   begin
+	   writeln(A + B);
+	   end Sum;
 
 begin
-   A := 10;
-   B := 3;
-   C := Increment_By (A, B);
-   Display_Result;
-end Show_Increment;
+writeln("This is main");
+Sum(3,5);
+end; 
