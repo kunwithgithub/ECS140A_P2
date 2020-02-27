@@ -81,6 +81,7 @@ public class CodeGeneration extends DepthFirstAdapter
     {
 
         inStart(node);
+        keepWriting(" import java.util.*;\n import java.io.*;\n");
         node.getPNada().apply(this);
         node.getEOF().apply(this);
         outStart(node);

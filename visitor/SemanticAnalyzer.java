@@ -17,15 +17,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 	private SymbolTable table;
 
 	private void acceptRole(SymbolEntry s, int expected, String errorMessage){
-		if (s.role != SymbolEntry.NONE && s.role != expected)
-		System.out.println("accept 1");
+		if (s.role != SymbolEntry.NONE && s.role != expected){
+			
 		   System.out.println(errorMessage);
+		   System.exit(0);
+		}
 	 }
   
 	 private void acceptRole(SymbolEntry s, Set<Integer> expected, String errorMessage){
-		if (s.role != SymbolEntry.NONE && ! (expected.contains(s.role)))
-		System.out.println("accept 2");
+		if (s.role != SymbolEntry.NONE && ! (expected.contains(s.role))){
+		   //System.out.println(s.role);
 		   System.out.println(errorMessage);
+		   System.exit(0);
+		}
 	 }
 
     public SemanticAnalyzer(){
@@ -35,7 +39,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 	
 	private void initTable(){
 		table = new SymbolTable();
-		System.out.println("in initTable");
 		table.enterScope();
 		
 		SymbolEntry entry = table.enterSymbol("INTEGER".toUpperCase());
@@ -267,8 +270,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
 			TIdent id = node.getIdent();
 			String key = id.getText();
-			if(key.toUpperCase()!="INTEGER"){
-				System.out.println("undefined type");
+			if(!key.toUpperCase().equals("INTEGER")){
+				System.out.println("undefined type :"+key);
 				System.exit(0);
 			}
 			SymbolEntry entry = table.findSymbol(key.toUpperCase());
@@ -1449,6 +1452,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 			String key = id.getText();
 			SymbolEntry entry = table.findSymbol(key.toUpperCase());
 			Set<Integer> temp = new HashSet<Integer>();
+			temp.addAll(Arrays.asList(SymbolEntry.VAR,SymbolEntry.PARAM));
 			acceptRole(entry,temp,"must be a parameter variable name");
             node.getIdent().apply(this);
         }

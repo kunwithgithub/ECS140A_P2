@@ -8,13 +8,13 @@ import nada.lexer.*;
 import nada.parser.*;
 import nada.visitor.*;
 
-public class Main {
+public class nada {
      public static void main(String[] args) {
           long start_time, stop_time; // times compilation
 
           if (args.length < 1) {
                System.out.println("Usage:");
-               System.out.println("java uk.co.brainycreatures.smallpascal.Main <filename>");
+               System.out.println("java nada.nada <filename>");
           }
 
           try {
@@ -33,6 +33,7 @@ public class Main {
 
                //generate class file
                ast.apply(new CodeGeneration(args[0]));
+
           }
           catch (Exception e) {
                System.out.println(e);

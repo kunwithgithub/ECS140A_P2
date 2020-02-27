@@ -38,7 +38,6 @@ public class SymbolEntry extends Object{
 
    public void setRole(int r){
       role = r;
-      System.out.println("in setRole: "+r);
 	  if(this.name.equals("")){// detecting emptySymbolEntry
 		  return;
 	  }
