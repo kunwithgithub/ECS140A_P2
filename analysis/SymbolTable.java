@@ -16,6 +16,7 @@ public class SymbolTable extends Object{
    private static final SymbolEntry EMPTY_SYMBOL = new SymbolEntry("");
 
    public SymbolTable(){
+      System.out.println("symbolTable constructor");
       reset();
    }
 
@@ -25,21 +26,25 @@ public class SymbolTable extends Object{
    }
 
    public void enterScope(){
+      System.out.println("enterScope");
       stack.push(new HashMap<String, SymbolEntry>());
       level++;
    }
 
    public void exitScope(){
       Map<String, SymbolEntry> table = stack.pop();
+      System.out.println("exitscope");
       printTable(table);
       level--;
    }
 
    public SymbolEntry enterSymbol(String id){
+      System.out.println("in enterSymbol" + id);
       Map<String, SymbolEntry> table = stack.peek();
+      System.out.println(stack.size());
       if (table.containsKey(id)){
     	 System.out.println("identifier already declared in this block");
-//    	 System.exit(0);
+    	 System.exit(0);
        return EMPTY_SYMBOL;
       }
       else{
@@ -50,6 +55,7 @@ public class SymbolTable extends Object{
    }
 
    public SymbolEntry findSymbol(String id){
+      System.out.println("in findSymbol:" + id);
       for (int i = stack.size() - 1; i >= 0; i--){
          Map<String, SymbolEntry> table = stack.get(i);
          SymbolEntry s = table.get(id);

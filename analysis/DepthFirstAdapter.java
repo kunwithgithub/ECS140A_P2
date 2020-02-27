@@ -1270,6 +1270,7 @@ public class DepthFirstAdapter extends AnalysisAdapter
         inANumLitPrimary(node);
         if(node.getNumberLit() != null)
         {
+            
             node.getNumberLit().apply(this);
         }
         outANumLitPrimary(node);

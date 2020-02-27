@@ -16,6 +16,18 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     private ArrayList<String> identList;
 	private SymbolTable table;
 
+	private void acceptRole(SymbolEntry s, int expected, String errorMessage){
+		if (s.role != SymbolEntry.NONE && s.role != expected)
+		System.out.println("accept 1");
+		   System.out.println(errorMessage);
+	 }
+  
+	 private void acceptRole(SymbolEntry s, Set<Integer> expected, String errorMessage){
+		if (s.role != SymbolEntry.NONE && ! (expected.contains(s.role)))
+		System.out.println("accept 2");
+		   System.out.println(errorMessage);
+	 }
+
     public SemanticAnalyzer(){
 		initTable();
 		identList = new ArrayList<String>();       
@@ -23,6 +35,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 	
 	private void initTable(){
 		table = new SymbolTable();
+		System.out.println("in initTable");
+		table.enterScope();
 		
 		SymbolEntry entry = table.enterSymbol("INTEGER");
 		entry.setRole(SymbolEntry.TYPE);
@@ -51,12 +65,10 @@ public class SemanticAnalyzer extends DepthFirstAdapter
     @Override
     public void caseStart(Start node)
     {
-		table.enterScope();
         inStart(node);
         node.getPNada().apply(this);
         node.getEOF().apply(this);
 		outStart(node);
-		table.exitScope();
     }
 
     public void inANada(ANada node)
@@ -119,7 +131,8 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         if(node.getEnd() != null)
         {   
 
-            node.getEnd().apply(this);
+			node.getEnd().apply(this);
+			table.exitScope();
         }
         
         if(node.getIdent() != null)
@@ -254,17 +267,24 @@ public class SemanticAnalyzer extends DepthFirstAdapter
 
 			TIdent id = node.getIdent();
 			String key = id.getText();
-			if(key!="INTEGER"){
+			if(key.toLowerCase()!="integer"){
 				System.out.println("undefined type");
 				System.exit(0);
 			}
 			SymbolEntry entry = table.findSymbol(key);
             node.getIdent().apply(this);
 		}
-		SymbolEntry list = null;
-        for (int i = 0; i < identList.size(); i++) {
-			list.append(table.enterSymbol(identList.get(i)));
-		}
+		if(identList.size()>0){
+			SymbolEntry list = table.enterSymbol(identList.get(0));
+			if(identList.size()>1){
+            	for (int i = 1; i < identList.size(); i++) {
+					SymbolEntry entry = null;
+					System.out.println("in something: "+identList.get(i)+" i:"+i+" size:"+identList.size());
+					entry = table.enterSymbol(identList.get(i));
+				
+					list.append(entry);
+				}
+			}
 		list.setRole(SymbolEntry.VAR);
         identList.clear();
         if(node.getSemi() != null)
@@ -303,10 +323,17 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         	//call identifierlist
             node.getConst().apply(this);
 		}
-		SymbolEntry list = null;
-        for (int i = 0; i < identList.size(); i++) {
-			list.append(table.findSymbol(identList.get(i)));
-		}
+		if(identList.size()>0){
+			SymbolEntry list = table.enterSymbol(identList.get(0));
+			if(identList.size()>1){
+            	for (int i = 1; i < identList.size(); i++) {
+					SymbolEntry entry = null;
+					System.out.println("in something: "+identList.get(i)+" i:"+i+" size:"+identList.size());
+					entry = table.enterSymbol(identList.get(i));
+				
+					list.append(entry);
+				}
+			}
 		list.setRole(SymbolEntry.CONST);
         identList.clear();
 
@@ -405,6 +432,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
             node.getProc().apply(this);
           
 		}
+		table.enterScope();
         if(node.getIdent() != null)
         {
 			TIdent id = node.getIdent();
@@ -492,11 +520,19 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         if(node.getIdent() != null)
         {   
 			
-			symbolEntry list = null;
-            for (int i = 0; i < identList.size(); i++) {
-				list.append(identList.get(i));
-            }
+			if(identList.size()>0){
+			SymbolEntry list = table.enterSymbol(identList.get(0));
+			if(identList.size()>1){
+            	for (int i = 1; i < identList.size(); i++) {
+					SymbolEntry entry = null;
+					System.out.println("in something: "+identList.get(i)+" i:"+i+" size:"+identList.size());
+					entry = table.enterSymbol(identList.get(i));
+				
+					list.append(entry);
+				}
+			}
 			list.setRole(SymbolEntry.PARAM);
+			}
 			String key = node.getIdent().getText();
 			SymbolEntry entry = table.findSymbol(key);
 			acceptRole(entry,SymbolEntry.TYPE,"Must be a type name");
@@ -523,8 +559,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         inAAnotherParamSpec(node);
         if(node.getSemi() != null)
         {
-
-        	identList.add(",");
             node.getSemi().apply(this);
         }
         
@@ -777,7 +811,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter
         {
 			Set<Integer> temp = new HashSet<Integer>();
 			temp.addAll(Arrays.asList(SymbolEntry.VAR, SymbolEntry.PARAM));
-			SymbolEntry entry = findSymbol(node.getIdent().getText());
+			SymbolEntry entry = table.findSymbol(node.getIdent().getText());
 			acceptRole(entry, temp, "Must be a variable or parameter name");
             node.getIdent().apply(this);
         }

@@ -29,7 +29,7 @@ public class Main {
                Start ast = parser.parse();
 
                //check program semantics
-               //ast.apply(new SemanticAnalyzer());
+               ast.apply(new SemanticAnalyzer());
 
                //generate class file
                ast.apply(new CodeGeneration(args[0]));
