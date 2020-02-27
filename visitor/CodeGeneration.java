@@ -138,8 +138,19 @@ public class CodeGeneration extends DepthFirstAdapter
             node.getBegin().apply(this);
         }
         if(node.getStmtSeq() != null)
-        {
-            node.getStmtSeq().apply(this);
+        {   
+        	if(time == 2)
+        	{
+        	 String mainFunction = "\n public static void main(String[] args)";
+             keepWriting(mainFunction);
+             keepWriting("\n{\n");
+             node.getStmtSeq().apply(this);
+             keepWriting("\n}\n");
+        	}
+        		
+        	else {
+        	   node.getStmtSeq().apply(this);
+        	}
         }
         
         if(node.getEnd() != null)
@@ -720,11 +731,11 @@ public class CodeGeneration extends DepthFirstAdapter
         inAProcCallStmtSimpleStmt(node);
         if(node.getProcCallStmt() != null)
         {   
-            String mainFunction = "\n public static void main(String[] args)";
-            keepWriting(mainFunction);
-            keepWriting("\n{\n");
+           // String mainFunction = "\n public static void main(String[] args)";
+           // keepWriting(mainFunction);
+            //keepWriting("\n{\n");
             node.getProcCallStmt().apply(this);
-            keepWriting("\n}\n");
+            //keepWriting("\n}\n");
         }
         outAProcCallStmtSimpleStmt(node);
     }
@@ -1785,6 +1796,7 @@ public class CodeGeneration extends DepthFirstAdapter
         outAModMulOp(node);
     }
 }
+
 
 
 
