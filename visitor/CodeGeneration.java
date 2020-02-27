@@ -8,6 +8,8 @@ import java.io.*;
 import nada.analysis.*;
 import nada.lexer.*;
 import nada.parser.*;
+import java.nio.file.Path; 
+import java.nio.file.Paths;
 
 
 public class CodeGeneration extends DepthFirstAdapter
@@ -19,12 +21,14 @@ public class CodeGeneration extends DepthFirstAdapter
     private String hold_constrcutor;
     private String hold_string;
     private String main_constructor;
+    private String top_procedure_name;
     private int hold_bracket;
     private boolean outExists;
 
     public CodeGeneration(String filename){
         
-    	
+        String[] nameArray = filename.split("[\\\\|/]");
+    	this.top_procedure_name = nameArray[nameArray.length-1].replace(".ada",""); 
         this.filename = filename.replace(".ada",".java"); 
         outExists = false;
         hold_constrcutor = "";
@@ -463,10 +467,14 @@ public class CodeGeneration extends DepthFirstAdapter
           
         if(node.getIdent() != null)
         {
-            keepWriting(node.getIdent().getText());
+            if(time == 2){
+                keepWriting(top_procedure_name);
+            }else{
+                keepWriting(node.getIdent().getText());
+            }
             hold_constrcutor = node.getIdent().getText();
             if(time == 2){
-                main_constructor = hold_constrcutor;
+                main_constructor = top_procedure_name;
             }
             keepWriting("{\n");
             //keepWriting(node.getIdent().getText());
