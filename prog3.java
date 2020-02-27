@@ -25,10 +25,10 @@ I=1;
 }
 
 }
-I=1;
 
  public static void main(String[] args)
 {
+I=1;
  new INIT_MATRIX(IA);
 
 }

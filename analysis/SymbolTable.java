@@ -1,4 +1,12 @@
+package nada.analysis;
+
 import java.util.*;
+import java.io.*;
+import nada.node.*;
+import nada.analysis.*;
+import nada.lexer.*;
+import nada.parser.*;
+import nada.visitor.*;
 
 public class SymbolTable extends Object{
 
@@ -49,7 +57,7 @@ public class SymbolTable extends Object{
              return s;
       }
       System.out.println("undeclared identifier");
-      //System.exit(0);
+      System.exit(0);
       return EMPTY_SYMBOL;
    }
          

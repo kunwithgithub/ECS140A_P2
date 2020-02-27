@@ -1,3 +1,13 @@
+package nada.analysis;
+
+import java.util.*;
+import java.io.*;
+import nada.node.*;
+import nada.analysis.*;
+import nada.lexer.*;
+import nada.parser.*;
+import nada.visitor.*;
+
 public class SymbolEntry extends Object{
 
    public static final int NONE = 0;

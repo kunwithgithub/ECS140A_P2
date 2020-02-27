@@ -440,14 +440,14 @@ public class CodeGeneration extends DepthFirstAdapter
         {   
         	if(time == 1)
           {
-            keepWriting(" class ");
+            keepWriting("public class ");
             time++;
             node.getProc().apply(this);
           } 
             
         	else if(time > 1)
             {
-            	keepWriting(" static class ");
+            	keepWriting("public class ");
             	time++;
             	node.getProc().apply(this);
             }
@@ -1228,7 +1228,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAnotherParam(node);
         if(node.getComma() != null)
         {
-            identList.add(",");
+            keepWriting(",");
             node.getComma().apply(this);
         }
         if(node.getSimpleExpr() != null)
