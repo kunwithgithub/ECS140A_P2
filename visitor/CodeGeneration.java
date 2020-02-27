@@ -15,14 +15,19 @@ public class CodeGeneration extends DepthFirstAdapter
     private String filename = "";
     private BufferedWriter writer;
     private ArrayList<String> identList;
-    private int time = 1;
-    private String hold_constrcutor = "";
-    private int hold_bracket = 1;
+    private int time;
+    private String hold_constrcutor;
+    private int hold_bracket;
+    private boolean outExists;
 
     public CodeGeneration(String filename){
         
     	
         this.filename = filename.replace(".ada",".java"); 
+        outExists = false;
+        hold_constrcutor = "";
+        hold_bracket = 1;
+        time = 1;
         identList = new ArrayList<String>();
         try { 
             writer = new BufferedWriter(new FileWriter(this.filename)); 
@@ -523,22 +528,28 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             node.getColon().apply(this);
         }
+         outExists = false;
         if(node.getOut() != null)
         {   //No out parameters in java, but
         	//there are reference type
             node.getOut().apply(this);
+            outExists = true;
         }
         if(node.getIdent() != null)
         {   
-            keepWriting(node.getIdent().getText() + " ");
+            if(outExists==false){
+                keepWriting("int ");
             
             for (int i = 0; i < identList.size(); i++) {
                 keepWriting(identList.get(i));
             }
-            identList.clear();
-        	//call identifier list
+            
+            //call identifier list
+        }
             node.getIdent().apply(this);
         }
+        identList.clear();
+        outExists = false;
         outAParamSpec(node);
     }
 
@@ -560,7 +571,7 @@ public class CodeGeneration extends DepthFirstAdapter
         {
             //keepWriting(";\n");
 
-        	keepWriting(", ");
+        	identList.add(",");
             node.getSemi().apply(this);
         }
         
@@ -1123,6 +1134,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAProcCallStmt(node);
         if(node.getIdent() != null)
         {
+            keepWriting(" new ");
             keepWriting(node.getIdent().getText());
             node.getIdent().apply(this);
         }
@@ -1197,7 +1209,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAAnotherParam(node);
         if(node.getComma() != null)
         {
-            keepWriting(",");
+            identList.add(",");
             node.getComma().apply(this);
         }
         if(node.getSimpleExpr() != null)

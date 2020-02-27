@@ -4,10 +4,10 @@
  int  A;
  int  I;
  static class INIT_MATRIX{
-INIT_MATRIX(INTEGER X, MATRIX Y){
+INIT_MATRIX(int X){
  int  I,J;
  static class INIT_MATRIX1{
-INIT_MATRIX1(INTEGER X, MATRIX Y){
+INIT_MATRIX1(int X){
  int  I,J;
 I=1;
 while(I<=COLUMN_MAX){
@@ -29,7 +29,7 @@ I=1;
 
  public static void main(String[] args)
 {
-INIT_MATRIX(I,A);
+ new INIT_MATRIX(IA);
 
 }
 
