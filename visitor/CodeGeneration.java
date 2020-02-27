@@ -432,6 +432,8 @@ public class CodeGeneration extends DepthFirstAdapter
         if(node.getIdent() != null)
         {
             keepWriting(node.getIdent().getText());
+            keepWriting("{\n");
+            keepWriting(node.getIdent().getText());
             node.getIdent().apply(this);
         }
         if(node.getFormalPart() != null)
@@ -457,6 +459,7 @@ public class CodeGeneration extends DepthFirstAdapter
         inAFormalPart(node);
         if(node.getLParen() != null)
         {
+            
             keepWriting("(");
             node.getLParen().apply(this);
         }
